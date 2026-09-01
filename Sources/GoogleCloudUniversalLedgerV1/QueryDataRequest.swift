@@ -17,32 +17,21 @@
 import Foundation
 @_spi(GoogleCloudInternal) import GoogleCloudWKT
 
-/// Certificate of the execution of a specific transaction in a round.
-public struct TransactionCertificate: Codable, Equatable, GoogleCloudWKT._AnyPackable,
+/// Request message for QueryData.
+public struct QueryDataRequest: Codable, Equatable, GoogleCloudWKT._AnyPackable,
   Sendable
 {
-  /// Output only. The ID of the transaction this certificate is for.
-  public var transactionDigestHex: Swift.String = Swift.String()
+  /// Required. The endpoint to serve the request.
+  /// Format: `projects/{project}/locations/{location}/endpoints/{endpoint}`
+  /// The location is a region.
+  public var endpoint: Swift.String = Swift.String()
 
-  /// Output only. The ID of the execution round at which this transaction was
-  /// executed in.
-  public var roundId: Swift.Int64 = Swift.Int64()
+  /// Required. A protobuf serialized
+  /// [SignedQueryRequest][google.cloud.universalledger.v1.SignedQueryRequest] to
+  /// query the Universal Ledger network.
+  public var serializedSignedQueryRequest: Foundation.Data = Foundation.Data()
 
-  /// Output only. The effects from the transaction execution.
-  public var transactionEffects: TransactionEffects? = nil
-
-  /// Output only. Events produced by the transaction.
-  public var events: [TransactionEvent] = []
-
-  /// Output only. Homomorphic checksum of the effects. A 2048 byte value encoded
-  /// as a hexadecimal string.
-  public var transactionEffectsStateChecksumHex: Swift.String = Swift.String()
-
-  /// Output only. The cryptographic digest of all the previous fields in
-  /// sequence. Used to build a Merkle tree for the proof of inclusion.
-  public var certificationResultsDigestHex: Swift.String = Swift.String()
-
-  /// Initialize a new instance of `TransactionCertificate`.
+  /// Initialize a new instance of `QueryDataRequest`.
   public init() {}
 
   /// Use `config` to return a new instance of this object, with some fields updated.
@@ -50,7 +39,7 @@ public struct TransactionCertificate: Codable, Equatable, GoogleCloudWKT._AnyPac
   /// Commonly used to initialize the value, for example:
   ///
   /// ```
-  /// let value = TransactionCertificate().with { $0.transactionDigestHex = ... }
+  /// let value = QueryDataRequest().with { $0.endpoint = ... }
   /// ```
   public func with(_ config: (inout Self) throws -> Swift.Void) rethrows -> Self {
     var copy = self
@@ -59,7 +48,7 @@ public struct TransactionCertificate: Codable, Equatable, GoogleCloudWKT._AnyPac
   }
 
   public static var _anyTypeUrl: Swift.String {
-    return "type.googleapis.com/google.cloud.universalledger.v1.TransactionCertificate"
+    return "type.googleapis.com/google.cloud.universalledger.v1.QueryDataRequest"
   }
   public init(fromAny any: GoogleCloudWKT.`Any`) throws {
     self = try GoogleCloudWKT._slowAnyDeserialize(Self.self, from: any)
