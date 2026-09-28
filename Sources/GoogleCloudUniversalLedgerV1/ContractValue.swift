@@ -17,27 +17,16 @@
 import Foundation
 @_spi(GoogleCloudInternal) public import GoogleWKT
 
-/// Invokes the execution of a contract method.
-public struct InvokeContractMethod: Codable, Equatable, GoogleWKT._AnyPackable,
+/// Represents a contract reference.
+public struct ContractValue: Codable, Equatable, GoogleWKT._AnyPackable,
   Sendable
 {
-  /// Required. The ID of the contract to run.
+  /// Required. The contract ID.
   public var contractId: Swift.String = Swift.String()
-
-  /// Name of the method to run.
-  public var methodName: Swift.String = Swift.String()
-
-  /// Optional. Immutable. Contains arguments to pass to the method.
-  public var methodArguments: [Swift.String: Value] = [:]
-
-  /// The amount to be paid.
-  /// Must be greater than zero when invoking payable methods; and zero for
-  /// non-payable ones.
-  public var payment: CurrencyValue? = nil
 
   @_spi(GoogleCloudInternal) public var _unknownFields: GoogleWKT._UnknownFields = .init()
 
-  /// Initialize a new instance of `InvokeContractMethod`.
+  /// Initialize a new instance of `ContractValue`.
   public init() {}
 
   /// Use `config` to return a new instance of this object, with some fields updated.
@@ -45,7 +34,7 @@ public struct InvokeContractMethod: Codable, Equatable, GoogleWKT._AnyPackable,
   /// Commonly used to initialize the value, for example:
   ///
   /// ```
-  /// let value = InvokeContractMethod().with { $0.contractId = ... }
+  /// let value = ContractValue().with { $0.contractId = ... }
   /// ```
   public func with(_ config: (inout Self) throws -> Swift.Void) rethrows -> Self {
     var copy = self
@@ -60,15 +49,9 @@ public struct InvokeContractMethod: Codable, Equatable, GoogleWKT._AnyPackable,
     init?(intValue: Swift.Int) { nil }
 
     static let contractId = CodingKeys(stringValue: "contractId")
-    static let methodName = CodingKeys(stringValue: "methodName")
-    static let methodArguments = CodingKeys(stringValue: "methodArguments")
-    static let payment = CodingKeys(stringValue: "payment")
 
     static let _knownKeys: Set<Swift.String> = [
-      "contractId",
-      "methodName",
-      "methodArguments",
-      "payment",
+      "contractId"
     ]
   }
 
@@ -77,15 +60,6 @@ public struct InvokeContractMethod: Codable, Equatable, GoogleWKT._AnyPackable,
     if let value = try container.decodeIfPresent(Swift.String.self, forKey: .contractId) {
       self.contractId = value
     }
-    if let value = try container.decodeIfPresent(Swift.String.self, forKey: .methodName) {
-      self.methodName = value
-    }
-    if let value = try container.decodeIfPresent(
-      [Swift.String: Value].self, forKey: .methodArguments)
-    {
-      self.methodArguments = value
-    }
-    self.payment = try container.decodeIfPresent(CurrencyValue.self, forKey: .payment)
     for key in container.allKeys where !CodingKeys._knownKeys.contains(key.stringValue) {
       self._unknownFields.json[key.stringValue] = try container.decode(
         GoogleWKT.WKTValue.self, forKey: key)
@@ -95,16 +69,13 @@ public struct InvokeContractMethod: Codable, Equatable, GoogleWKT._AnyPackable,
   public func encode(to encoder: Encoder) throws {
     var container = encoder.container(keyedBy: CodingKeys.self)
     try container.encode(self.contractId, forKey: .contractId)
-    try container.encode(self.methodName, forKey: .methodName)
-    try container.encode(self.methodArguments, forKey: .methodArguments)
-    try container.encodeIfPresent(self.payment, forKey: .payment)
     for (key, value) in self._unknownFields.json {
       try container.encode(value, forKey: CodingKeys(stringValue: key))
     }
   }
 
   public static var _anyTypeUrl: Swift.String {
-    return "type.googleapis.com/google.cloud.universalledger.v1.InvokeContractMethod"
+    return "type.googleapis.com/google.cloud.universalledger.v1.ContractValue"
   }
   public init(fromAny any: GoogleWKT.WKTAny) throws {
     self = try GoogleWKT._slowAnyDeserialize(Self.self, from: any)

@@ -17,19 +17,16 @@
 import Foundation
 @_spi(GoogleCloudInternal) public import GoogleWKT
 
-/// An entity in the Universal Ledger network. All accounts are attached to an
-/// entity. The entity ID, also often referred to as the account ID, is unique
-/// and immutable across the network.
-public struct Entity: Codable, Equatable, GoogleWKT._AnyPackable,
+/// A request to query the state of a transaction.
+public struct TransactionStateQuery: Codable, Equatable, GoogleWKT._AnyPackable,
   Sendable
 {
-  /// Output only. The ID assigned to the entity. This is assigned by the network
-  /// on account creation.
-  public var id: Swift.String = Swift.String()
+  /// Required. The transaction ID to get the state of.
+  public var transactionDigestHex: Swift.String = Swift.String()
 
   @_spi(GoogleCloudInternal) public var _unknownFields: GoogleWKT._UnknownFields = .init()
 
-  /// Initialize a new instance of `Entity`.
+  /// Initialize a new instance of `TransactionStateQuery`.
   public init() {}
 
   /// Use `config` to return a new instance of this object, with some fields updated.
@@ -37,7 +34,7 @@ public struct Entity: Codable, Equatable, GoogleWKT._AnyPackable,
   /// Commonly used to initialize the value, for example:
   ///
   /// ```
-  /// let value = Entity().with { $0.id = ... }
+  /// let value = TransactionStateQuery().with { $0.transactionDigestHex = ... }
   /// ```
   public func with(_ config: (inout Self) throws -> Swift.Void) rethrows -> Self {
     var copy = self
@@ -51,17 +48,17 @@ public struct Entity: Codable, Equatable, GoogleWKT._AnyPackable,
     init(stringValue: Swift.String) { self.stringValue = stringValue }
     init?(intValue: Swift.Int) { nil }
 
-    static let id = CodingKeys(stringValue: "id")
+    static let transactionDigestHex = CodingKeys(stringValue: "transactionDigestHex")
 
     static let _knownKeys: Set<Swift.String> = [
-      "id"
+      "transactionDigestHex"
     ]
   }
 
   public init(from decoder: Decoder) throws {
     let container = try decoder.container(keyedBy: CodingKeys.self)
-    if let value = try container.decodeIfPresent(Swift.String.self, forKey: .id) {
-      self.id = value
+    if let value = try container.decodeIfPresent(Swift.String.self, forKey: .transactionDigestHex) {
+      self.transactionDigestHex = value
     }
     for key in container.allKeys where !CodingKeys._knownKeys.contains(key.stringValue) {
       self._unknownFields.json[key.stringValue] = try container.decode(
@@ -71,14 +68,14 @@ public struct Entity: Codable, Equatable, GoogleWKT._AnyPackable,
 
   public func encode(to encoder: Encoder) throws {
     var container = encoder.container(keyedBy: CodingKeys.self)
-    try container.encode(self.id, forKey: .id)
+    try container.encode(self.transactionDigestHex, forKey: .transactionDigestHex)
     for (key, value) in self._unknownFields.json {
       try container.encode(value, forKey: CodingKeys(stringValue: key))
     }
   }
 
   public static var _anyTypeUrl: Swift.String {
-    return "type.googleapis.com/google.cloud.universalledger.v1.Entity"
+    return "type.googleapis.com/google.cloud.universalledger.v1.TransactionStateQuery"
   }
   public init(fromAny any: GoogleWKT.WKTAny) throws {
     self = try GoogleWKT._slowAnyDeserialize(Self.self, from: any)

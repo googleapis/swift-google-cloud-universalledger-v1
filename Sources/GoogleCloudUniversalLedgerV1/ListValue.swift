@@ -17,19 +17,16 @@
 import Foundation
 @_spi(GoogleCloudInternal) public import GoogleWKT
 
-/// Indices map key to value. For example, `keys[0]` key maps to `values[0]`.
-public struct DictValue: Codable, Equatable, GoogleWKT._AnyPackable,
+/// A list of values.
+public struct ListValue: Codable, Equatable, GoogleWKT._AnyPackable,
   Sendable
 {
-  /// Each key can be exactly one kind.
-  public var keys: KeysOneOf? = nil
-
   /// Each value can be exactly one kind.
   public var values: ValuesOneOf? = nil
 
   @_spi(GoogleCloudInternal) public var _unknownFields: GoogleWKT._UnknownFields = .init()
 
-  /// Initialize a new instance of `DictValue`.
+  /// Initialize a new instance of `ListValue`.
   public init() {}
 
   /// Use `config` to return a new instance of this object, with some fields updated.
@@ -37,7 +34,7 @@ public struct DictValue: Codable, Equatable, GoogleWKT._AnyPackable,
   /// Commonly used to initialize the value, for example:
   ///
   /// ```
-  /// let value = DictValue().with { $0.boolKeys = ... }
+  /// let value = ListValue().with { $0.boolValues = ... }
   /// ```
   public func with(_ config: (inout Self) throws -> Swift.Void) rethrows -> Self {
     var copy = self
@@ -51,20 +48,12 @@ public struct DictValue: Codable, Equatable, GoogleWKT._AnyPackable,
     init(stringValue: Swift.String) { self.stringValue = stringValue }
     init?(intValue: Swift.Int) { nil }
 
-    static let boolKeys = CodingKeys(stringValue: "boolKeys")
-    static let stringKeys = CodingKeys(stringValue: "stringKeys")
-    static let int64Keys = CodingKeys(stringValue: "int64Keys")
-    static let genericKeys = CodingKeys(stringValue: "genericKeys")
     static let boolValues = CodingKeys(stringValue: "boolValues")
     static let stringValues = CodingKeys(stringValue: "stringValues")
     static let int64Values = CodingKeys(stringValue: "int64Values")
     static let genericValues = CodingKeys(stringValue: "genericValues")
 
     static let _knownKeys: Set<Swift.String> = [
-      "boolKeys",
-      "stringKeys",
-      "int64Keys",
-      "genericKeys",
       "boolValues",
       "stringValues",
       "int64Values",
@@ -74,30 +63,6 @@ public struct DictValue: Codable, Equatable, GoogleWKT._AnyPackable,
 
   public init(from decoder: Decoder) throws {
     let container = try decoder.container(keyedBy: CodingKeys.self)
-
-    var keys: KeysOneOf? = nil
-    let keysCheckAndSet = {
-      if keys != nil {
-        throw DecodingError.dataCorrupted(
-          DecodingError.Context(
-            codingPath: decoder.codingPath, debugDescription: "Multiple values set for oneof 'keys'"
-          ))
-      }
-      keys = $0
-    }
-    if let boolKeys = try container.decodeIfPresent(BoolList.self, forKey: .boolKeys) {
-      try keysCheckAndSet(.boolKeys(boolKeys))
-    }
-    if let stringKeys = try container.decodeIfPresent(StringList.self, forKey: .stringKeys) {
-      try keysCheckAndSet(.stringKeys(stringKeys))
-    }
-    if let int64Keys = try container.decodeIfPresent(Int64List.self, forKey: .int64Keys) {
-      try keysCheckAndSet(.int64Keys(int64Keys))
-    }
-    if let genericKeys = try container.decodeIfPresent(RepeatedValue.self, forKey: .genericKeys) {
-      try keysCheckAndSet(.genericKeys(genericKeys))
-    }
-    self.keys = keys
 
     var values: ValuesOneOf? = nil
     let valuesCheckAndSet = {
@@ -132,19 +97,6 @@ public struct DictValue: Codable, Equatable, GoogleWKT._AnyPackable,
   public func encode(to encoder: Encoder) throws {
     var container = encoder.container(keyedBy: CodingKeys.self)
 
-    if let choice = self.keys {
-      switch choice {
-      case .boolKeys(let value):
-        try container.encode(value, forKey: .boolKeys)
-      case .stringKeys(let value):
-        try container.encode(value, forKey: .stringKeys)
-      case .int64Keys(let value):
-        try container.encode(value, forKey: .int64Keys)
-      case .genericKeys(let value):
-        try container.encode(value, forKey: .genericKeys)
-      }
-    }
-
     if let choice = self.values {
       switch choice {
       case .boolValues(let value):
@@ -162,18 +114,6 @@ public struct DictValue: Codable, Equatable, GoogleWKT._AnyPackable,
     }
   }
 
-  /// Each key can be exactly one kind.
-  public enum KeysOneOf: Codable, Equatable, Sendable {
-    /// Optional. A list of boolean keys.
-    indirect case boolKeys(BoolList)
-    /// Optional. A list of string keys.
-    indirect case stringKeys(StringList)
-    /// Optional. A list of int64 keys.
-    indirect case int64Keys(Int64List)
-    /// Optional. A generic list of keys.
-    indirect case genericKeys(RepeatedValue)
-  }
-
   /// Each value can be exactly one kind.
   public enum ValuesOneOf: Codable, Equatable, Sendable {
     /// Optional. A list of boolean values.
@@ -182,12 +122,12 @@ public struct DictValue: Codable, Equatable, GoogleWKT._AnyPackable,
     indirect case stringValues(StringList)
     /// Optional. A list of int64 values.
     indirect case int64Values(Int64List)
-    /// Optional. A generic list of values as values.
+    /// Optional. A generic list of values.
     indirect case genericValues(RepeatedValue)
   }
 
   public static var _anyTypeUrl: Swift.String {
-    return "type.googleapis.com/google.cloud.universalledger.v1.DictValue"
+    return "type.googleapis.com/google.cloud.universalledger.v1.ListValue"
   }
   public init(fromAny any: GoogleWKT.WKTAny) throws {
     self = try GoogleWKT._slowAnyDeserialize(Self.self, from: any)

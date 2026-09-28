@@ -17,17 +17,16 @@
 import Foundation
 @_spi(GoogleCloudInternal) public import GoogleWKT
 
-/// A list of dictionaries.
-public struct DictList: Codable, Equatable, GoogleWKT._AnyPackable,
+/// A generic list of values.
+public struct RepeatedValue: Codable, Equatable, GoogleWKT._AnyPackable,
   Sendable
 {
-  /// Optional. The DictValue values. All nested dicts must have the same
-  /// concrete type.
-  public var values: [DictValue] = []
+  /// Optional. The values in the list.
+  public var values: [Value] = []
 
   @_spi(GoogleCloudInternal) public var _unknownFields: GoogleWKT._UnknownFields = .init()
 
-  /// Initialize a new instance of `DictList`.
+  /// Initialize a new instance of `RepeatedValue`.
   public init() {}
 
   /// Use `config` to return a new instance of this object, with some fields updated.
@@ -35,7 +34,7 @@ public struct DictList: Codable, Equatable, GoogleWKT._AnyPackable,
   /// Commonly used to initialize the value, for example:
   ///
   /// ```
-  /// let value = DictList().with { $0.values = ... }
+  /// let value = RepeatedValue().with { $0.values = ... }
   /// ```
   public func with(_ config: (inout Self) throws -> Swift.Void) rethrows -> Self {
     var copy = self
@@ -58,7 +57,7 @@ public struct DictList: Codable, Equatable, GoogleWKT._AnyPackable,
 
   public init(from decoder: Decoder) throws {
     let container = try decoder.container(keyedBy: CodingKeys.self)
-    if let value = try container.decodeIfPresent([DictValue].self, forKey: .values) {
+    if let value = try container.decodeIfPresent([Value].self, forKey: .values) {
       self.values = value
     }
     for key in container.allKeys where !CodingKeys._knownKeys.contains(key.stringValue) {
@@ -76,7 +75,7 @@ public struct DictList: Codable, Equatable, GoogleWKT._AnyPackable,
   }
 
   public static var _anyTypeUrl: Swift.String {
-    return "type.googleapis.com/google.cloud.universalledger.v1.DictList"
+    return "type.googleapis.com/google.cloud.universalledger.v1.RepeatedValue"
   }
   public init(fromAny any: GoogleWKT.WKTAny) throws {
     self = try GoogleWKT._slowAnyDeserialize(Self.self, from: any)

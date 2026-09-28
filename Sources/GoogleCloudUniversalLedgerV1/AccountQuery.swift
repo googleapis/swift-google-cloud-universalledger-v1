@@ -17,16 +17,23 @@
 import Foundation
 @_spi(GoogleCloudInternal) public import GoogleWKT
 
-/// A list of account IDs.
-public struct AccountIdList: Codable, Equatable, GoogleWKT._AnyPackable,
+/// A request to query information about an account.
+public struct AccountQuery: Codable, Equatable, GoogleWKT._AnyPackable,
   Sendable
 {
-  /// Optional. The account ID values.
-  public var values: [Swift.String] = []
+  /// Required. The ID of the account to get information about.
+  public var accountId: Swift.String = Swift.String()
+
+  /// Optional. The ID of the execution round (similar to block "height") at
+  /// which to request data. The returned account information will be accurate
+  /// for the world state at this execution round. If unspecified, uses the
+  /// latest finalized round as known by the serving validator. The state at a
+  /// given round ID is always consistent and canonical.
+  public var roundId: Swift.Int64 = Swift.Int64()
 
   @_spi(GoogleCloudInternal) public var _unknownFields: GoogleWKT._UnknownFields = .init()
 
-  /// Initialize a new instance of `AccountIdList`.
+  /// Initialize a new instance of `AccountQuery`.
   public init() {}
 
   /// Use `config` to return a new instance of this object, with some fields updated.
@@ -34,7 +41,7 @@ public struct AccountIdList: Codable, Equatable, GoogleWKT._AnyPackable,
   /// Commonly used to initialize the value, for example:
   ///
   /// ```
-  /// let value = AccountIdList().with { $0.values = ... }
+  /// let value = AccountQuery().with { $0.accountId = ... }
   /// ```
   public func with(_ config: (inout Self) throws -> Swift.Void) rethrows -> Self {
     var copy = self
@@ -48,17 +55,22 @@ public struct AccountIdList: Codable, Equatable, GoogleWKT._AnyPackable,
     init(stringValue: Swift.String) { self.stringValue = stringValue }
     init?(intValue: Swift.Int) { nil }
 
-    static let values = CodingKeys(stringValue: "values")
+    static let accountId = CodingKeys(stringValue: "accountId")
+    static let roundId = CodingKeys(stringValue: "roundId")
 
     static let _knownKeys: Set<Swift.String> = [
-      "values"
+      "accountId",
+      "roundId",
     ]
   }
 
   public init(from decoder: Decoder) throws {
     let container = try decoder.container(keyedBy: CodingKeys.self)
-    if let value = try container.decodeIfPresent([Swift.String].self, forKey: .values) {
-      self.values = value
+    if let value = try container.decodeIfPresent(Swift.String.self, forKey: .accountId) {
+      self.accountId = value
+    }
+    if let value = try container.decodeIfPresent(Swift.Int64.self, forKey: .roundId) {
+      self.roundId = value
     }
     for key in container.allKeys where !CodingKeys._knownKeys.contains(key.stringValue) {
       self._unknownFields.json[key.stringValue] = try container.decode(
@@ -68,14 +80,15 @@ public struct AccountIdList: Codable, Equatable, GoogleWKT._AnyPackable,
 
   public func encode(to encoder: Encoder) throws {
     var container = encoder.container(keyedBy: CodingKeys.self)
-    try container.encode(self.values, forKey: .values)
+    try container.encode(self.accountId, forKey: .accountId)
+    try container.encode(self.roundId, forKey: .roundId)
     for (key, value) in self._unknownFields.json {
       try container.encode(value, forKey: CodingKeys(stringValue: key))
     }
   }
 
   public static var _anyTypeUrl: Swift.String {
-    return "type.googleapis.com/google.cloud.universalledger.v1.AccountIdList"
+    return "type.googleapis.com/google.cloud.universalledger.v1.AccountQuery"
   }
   public init(fromAny any: GoogleWKT.WKTAny) throws {
     self = try GoogleWKT._slowAnyDeserialize(Self.self, from: any)
